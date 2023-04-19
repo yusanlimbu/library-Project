@@ -1,0 +1,60 @@
+
+{% extends 'base/realbase.html' %}
+
+{% block content %}
+ <div class="container-fluid">
+     <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Books</h1>
+                    <p class="mb-4">This are all the books in the library of the Orchid College <a target="_blank"
+                            href="https://www.oic.edu.np/">official DataTables documentation</a>.</p>
+
+                    <!-- DataTales Example --> 
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Total Copies</th>
+                        <th>Available Copies</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                {% comment %} <tfoot>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Age</th>
+                        <th>Available Copies</th>
+                        <th>Salary</th>
+                    </tr>
+                </tfoot> {% endcomment %}
+                <tbody>
+                    {% for book in books %}
+                            <tr>
+                                <td>{{ book.title }}</td>
+                                <td>{{ book.author }}</td>
+                                <td>{{ book.isbn }}</td>
+                                <td>{{ book.total_copies }}</td>
+                                <td>{{ book.available_copies }}</td>
+                                <td>
+                                    {% comment %} {% if book.available_copies > 0 %}
+                                    <a href="{% url 'issue_book' book.id %}">Issue</a>
+                                    {% endif %} {% endcomment %}
+                                </td>
+                            </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

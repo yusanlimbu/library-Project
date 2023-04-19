@@ -1,0 +1,25 @@
+
+<!-- upload.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Students</title>
+</head>
+<body>
+    <h1>Upload Students</h1>
+    {% if error %}
+        <p style="color: red">{{ error }}</p>
+    {% endif %}
+    {% if message %}
+        <p style="color: green">{{ message }}</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="myfile">
+        <br><br>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>
