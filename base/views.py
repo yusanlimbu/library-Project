@@ -1,14 +1,11 @@
-from django.shortcuts import render
-
-# Create your views here.
-
-
+from django.shortcuts import render, redirect
 
 # from django.shortcuts import render, get_object_or_404
 
 from django.http import HttpResponse
 from django.contrib import messages
 from .models import *
+from .forms import BookForm
 
 
 
@@ -26,6 +23,35 @@ def book_list(request):
 def student_list(request):
     students = Student.objects.all()
     return render(request, 'base/student_list.html', {'students':students} )
+
+def add_book(request):
+    form = BookForm()
+    if request.method == 'POST':
+        #print('Printing POST:',request.POST)
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('base:book_list')
+
+
+
+    context = {'form':form}
+    return render(request,'base/add_book.html', context)
+
+
+def update_book(request,pk):
+
+    book = Book.objects.get(pk=pk)
+    form = BookForm(instance=book)
+    if request.method == 'POST':
+        #print('Printing POST:',request.POST)
+        form = BookForm(request.POST, instance = book)
+        if form.is_valid():
+            form.save()
+            return redirect('base:book_list')
+
+    context = {'form':form}
+    return render(request,'base/add_book.html', context)
 
 
 

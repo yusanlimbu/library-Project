@@ -1,37 +1,18 @@
-# from django.urls import path
-# from . import views
-
-# # app_name = 'base'
-
-# urlpatterns = [
-#     path('',views.base ,name='book_list'),
-#     path(''),
-#     # path('admin/', admin.site.urls),
-#     # path('', views.book_list, name='book_list'),
-#     # path('<int:book_id>/', views.book_detail, name='book_detail'),
-
-#     # path('',views.DashboardHomeView.as_view(),name='home'),
-
-
-#      # Category
-#     # path('book',views.BookListView.as_view(),name = 'book-list'),
-#     # path('book/create',views.BookCreateView.as_view(),name = 'book-create'),
-#     # path('book/<int:pk>/update',views.BookUpdateView.as_view(),name = 'book-update'),
-#     # path('book/<int:pk>/detail/',views.BookDetailView.as_view(),name = 'book-detail'),
-#     # path('book/<int:pk>/delete/',views.BookDeleteView.as_view(),name = 'book-delete'),
-# ]
-
-
-
 
 from django.urls import path
-from .views import book_list
+from .views import book_list,add_book,update_book
 from base import views
 
 app_name = 'base'
 
 urlpatterns = [
+    #books
     path('', book_list, name='book_list'),
+    path('add_book/', add_book, name='add_book'),
+    path('update_book/<str:pk>', update_book, name='update_book'),
+
+
+    #excel import
     path('import/', views.upload, name='import'),
 
 
