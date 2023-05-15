@@ -1,32 +1,126 @@
-<html>
-    <body>
-  <table border='1px'>
-    <thead>
-        <tr>
-            <th>Book Title</th>
-            <th>Author</th>
-            <th>ISBN</th>
-            <th>Total Copies</th>
-            <th>Available Copies</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for book in books %}
-        <tr>
-            <td>{{ book.title }}</td>
-            <td>{{ book.author }}</td>
-            <td>{{ book.isbn }}</td>
-            <td>{{ book.total_copies }}</td>
-            <td>{{ book.available_copies }}</td>
-            <td>
-                {% comment %} {% if book.available_copies > 0 %}
-                <a href="{% url 'issue_book' book.id %}">Issue</a>
-                {% endif %} {% endcomment %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>The BookShelf Nepal</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
+<style type="text/css">
+    .bs-example{
+        margin: 0px;
+
+    }
+.navbar-brand{
+  font-size: 20px;
+  font-family: sans-serif;
+
+}
+.col-lg-6{
+  padding-left: 20%;
+}
+.jumbotron{
+  margin-bottom: 0px;
+}
+.wel{
+  margin-top: 60px;
+  padding-left: 25%;
+  
+}
+
+</style>
+</head>
+<body>
+
+
+
+
+  <!DOCTYPE html>
+  {% load static %}
+  <html lang="en">
+  <head>
+  <meta charset="utf-8">
+  
+  
+  <style type="text/css">
+      .bs-example{
+          margin: 0px;
+          
+  
+      }
+  .navbar-brand{
+    font-size: 30px;
+    font-family: cursive;
+    color: rgb(61, 67, 65);
+    
+  
+  }
+  
+  
+  </style>
+  </head>
+  <body>
+  <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand" href="logout ">
+         <img src="static\images\logo.png" width="50" height="50" class="d-inline-block align-top" alt="">
+        The BookShelf Nepal
+      </a>
+    </nav>
+  
+  
+  </body>
+  </html>
+
+
+
+
+
+
+
+
+<h1 class="wel">Welcome to The BookShelf Nepal!! </h1>
+<h3 align="center">Please login according to your category.</h3>
+
+
+
+
+
+
+<div class="jumbotron">
+  
+
+  <div class="row">
+
+    <div class="col-lg-6">
+      <img src="{% static "images/admin.jpg" %}" width="70%" height="70%" alt=""><br><br>
+        <a class="btn btn-secondary" style="text-align:center" href="/adminclick" role="button">Admin</a>
+
+    </div>
+
+    <div class="col-lg-6">
+      <img src="{% static "images/student.jpg" %}" width="70%" height="70%" alt=""><br><br>
+      <a class="btn btn-secondary" href="/studentclick" role="button">Student</a>
+    </div>
+  </div>
+<hr class="my-4">
+
+</div>
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

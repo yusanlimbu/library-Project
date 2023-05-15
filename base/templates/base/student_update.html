@@ -1,3 +1,7 @@
+
+
+
+
 {% extends 'base/base.html' %}
 
 {% block content %}
@@ -6,7 +10,7 @@
 
  <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Book</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Student Update</h6>
     </div>
     <div class="card-body">
         <form method="POST" action="" enctype="multipart/form-data">
@@ -15,10 +19,11 @@
                 <div class="form-group">
                     <label >{{field.label}}{% if field.field.required %}: {% endif %} </label>
                     {{ field }}
-                     <span class="form-error-text">{{ field.errors|striptags|safe }}</span> 
+                    <span class="form-error-text">{{ field.errors|striptags|safe }}</span> 
+                    
                 </div>
                 {% endfor %}
-                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-primary" type="submit">Update</button>
          </from>  
     </div>
 </div>   
@@ -29,11 +34,17 @@
 {% endblock content %} 
 
 
-
-
-
-{% comment %} <form method="POST" action="" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{form}} 
-        <input type='submit' value='submit'> {% endcomment %}
-
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Update Student</title>
+</head>
+<body>
+    <h1>Update Student</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html> {% endcomment %}

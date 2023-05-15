@@ -129,11 +129,11 @@
             </li> {% endcomment %}
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item active">
+            {% comment %} <li class="nav-item active">
                 <a class="nav-link" href="base.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
-            </li>
+            </li> {% endcomment %}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -266,6 +266,14 @@
     <!-- Page level custom scripts -->
     <script src="/static/base/js/demo/datatables-demo.js"></script>
 
+     <!-- //delete link script with modal popup -->
+     <script>
+        $('body').on('click','.delete-link',function(e){
+            if(! confirm("are you sure you want to delete ? "))
+                e.preventDefault();
+        }
+        );
+    </script>
 </body>
 
 </html>

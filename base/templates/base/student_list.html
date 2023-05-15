@@ -1,5 +1,5 @@
 
-{% extends 'base/realbase.html' %}
+{% extends 'base/base.html' %}
 
 {% block content %}
 
@@ -28,19 +28,10 @@
                         <th>Course</th>
                         <th>batch</th>
                         <th>Phone number</th>
+                        <th>Action</th>
                         {% comment %} <th>Views</th> {% endcomment %}
                     </tr>
                 </thead>
-                {% comment %} <tfoot>
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>ISBN</th>
-                        <th>Age</th>
-                        <th>Available Copies</th>
-                        <th>Salary</th>
-                    </tr>
-                </tfoot> {% endcomment %}
                 <tbody>
                     {% for student in students %}
                             <tr>
@@ -49,8 +40,23 @@
                                 <td>{{ student.email }}</td>
                                 <td>{{ student.password }}</td>
                                 <td>{{ student.course }}</td>
-                                <td>{{ student.batch }}</td>
+                                <td>{{ student.batch }}</td> 
                                 <td>{{ student.phone_number }}</td>
+                                 <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'base:update_student' student.pk %}" class="btn btn-info btn-sm ">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        {% if not object.non_deletetable %}
+                                                <form action="{% url 'base:delete_student' student.pk %}"  method="post">
+                                                {% csrf_token %}
+                                                    <button class="btn btn-danger btn-sm delete-link ml-2" data-tooltip="tooltip" title="Delete">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                    </div>
+                                </td>  
                                 
                             </tr>
                     {% endfor %}

@@ -1,5 +1,5 @@
 
-{% extends 'base/realbase.html' %}
+{% extends 'base/base.html' %}
 
 {% block content %}
  <div class="container-fluid">
@@ -61,6 +61,14 @@
                                         <a href="{% url 'base:update_book' book.pk %}" class="btn btn-info btn-sm ">
                                             <i class="fas fa-pen"></i>
                                         </a>
+                                        {% if not object.non_deletetable %}
+                                                <form action="{% url 'base:delete_book' book.pk %}"  method="post">
+                                                {% csrf_token %}
+                                                    <button class="btn btn-danger btn-sm delete-link ml-2" data-tooltip="tooltip" title="Delete">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                                {% endif %}
                                     </div>
                                 </td> 
 
