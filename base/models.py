@@ -31,5 +31,19 @@ class Student(models.Model):
 
     
 
+from datetime import datetime,timedelta
 
 
+def expiry():
+    return datetime.today() + timedelta(days=1)
+
+class Issue(models.Model):
+    book = models.ForeignKey(Book,null=True, on_delete=models.PROTECT)
+    student = models.ForeignKey(Student,null=True, on_delete=models.PROTECT)
+    issue_date = models.DateField(auto_now_add=True)
+    expiry_date = models.DateField(default=expiry)
+    fine = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    status = models.CharField(max_length=10, choices=[('issued', 'Issued'), ('returned', 'Returned')], default='issued')
+
+    def __str__(self):
+        return f'{self.student} issued {self.book}'

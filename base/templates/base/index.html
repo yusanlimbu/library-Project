@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>The BookShelf Nepal</title>
+<title>The Orchid Library</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -42,41 +42,7 @@
 
 
 
-  <!DOCTYPE html>
-  {% load static %}
-  <html lang="en">
-  <head>
-  <meta charset="utf-8">
-  
-  
-  <style type="text/css">
-      .bs-example{
-          margin: 0px;
-          
-  
-      }
-  .navbar-brand{
-    font-size: 30px;
-    font-family: cursive;
-    color: rgb(61, 67, 65);
-    
-  
-  }
-  
-  
-  </style>
-  </head>
-  <body>
-  <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="logout ">
-         <img src="static\images\logo.png" width="50" height="50" class="d-inline-block align-top" alt="">
-        The BookShelf Nepal
-      </a>
-    </nav>
-  
-  
-  </body>
-  </html>
+{% include "base/accounts/navbar.html" %}
 
 
 
@@ -85,7 +51,7 @@
 
 
 
-<h1 class="wel">Welcome to The BookShelf Nepal!! </h1>
+<h1 class="wel">Welcome to The library!! </h1>
 <h3 align="center">Please login according to your category.</h3>
 
 
@@ -100,7 +66,7 @@
 
     <div class="col-lg-6">
       <img src="{% static "images/admin.jpg" %}" width="70%" height="70%" alt=""><br><br>
-        <a class="btn btn-secondary" style="text-align:center" href="/adminclick" role="button">Admin</a>
+        <a class="btn btn-secondary" style="text-align:center" href="{% url 'base:admin_login' %}" role="button">Admin</a>
 
     </div>
 

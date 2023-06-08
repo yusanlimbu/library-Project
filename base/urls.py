@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import book_list,add_book,update_book,update_student,delete_book,delete_student,home_view
+from .views import book_list,add_book,update_book,update_student,delete_book,delete_student,home_view,admin_login,issue_book,return_book
 from . import views
 from base import views
 
@@ -10,7 +10,7 @@ urlpatterns = [
 
     
     #books
-    path('', book_list, name='book_list'),
+    path('book_list/', book_list, name='book_list'),
     path('add_book/', add_book, name='add_book'),
     path('update_book/<str:pk>', update_book, name='update_book'),
     path('delete_book/<str:pk>', delete_book, name='delete_book'),
@@ -23,7 +23,18 @@ urlpatterns = [
     # path('student/<int:pk>/update',views.StudentUpdateView.as_view(),name = 'student-update'),
 
 
+    #issued and return
+    path('issue_book/', views.issue_book, name='issue_book'),
+    path('issue_detail/', views.issue_detail, name='issue_detail'),
+    path('return_book/<int:issue_id>/', return_book, name='return_book'),
+
+
     #excel import
     path('import/', views.upload, name='import'),
-    path('home/', home_view, name='index'),
+
+
+    #login
+    path("admin_login/", views.admin_login, name="admin_login"),
+    path('', home_view, name='index'),
+
 ]

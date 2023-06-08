@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
-
 from django.shortcuts import render, get_object_or_404
 
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import messages
 from .models import *
-from .forms import BookForm,StudentForm
+from .forms import BookForm,StudentForm,IssueForm
 
 from django.urls import reverse_lazy
 
@@ -106,9 +105,6 @@ def update_book(request, pk):
             if updated_book.available_copies > updated_book.total_copies:
                 form.add_error('available_copies', 'Available copies cannot exceed total copies.')
 
-            if updated_book.total_copies != updated_book.available_copies:
-                form.add_error('total_copies', 'Total copies must equal available copies.')
-
             if form.errors:
                 # If there are any validation errors, render the form with errors
                 context = {'form': form}
@@ -123,18 +119,10 @@ def update_book(request, pk):
     return render(request, 'base/add_book.html', context)
 
 
-
-
 def delete_book(request, pk):
     book = Book.objects.get(pk=pk)
     book.delete()
     return HttpResponseRedirect(reverse('base:book_list'))
-
-
-
-
-
-
 
 
 
@@ -153,32 +141,10 @@ def update_student(request,pk):
     return render(request,'base/student_update.html', context)
 
 
-
-# def delete_student(student_id):
-#     student = Student.objects.get(student_id=student_id)
-#     if student:
-#         student.delete()
-#     return student
-
 def delete_student(request, pk):
     student = Student.objects.get(pk=pk)
     student.delete()
     return HttpResponseRedirect(reverse('base:student_list'))
-    # return HttpResponseRedirect(reverse('base:student_list'))
-
-
-
-
-def home_view(request):
-    return render(request,'base/index.html')
-
-
-
-
-
-
-
-
 
 
 
@@ -215,3 +181,144 @@ def upload(request):
 
 
 
+
+
+
+from datetime import date
+
+def issue_detail(request):
+    today = date.today()
+    issues = Issue.objects.all()
+
+    for issue in issues:
+        if issue.expiry_date < today and issue.status == 'issued':
+            # Calculate the fine
+            days_overdue = (today - issue.expiry_date).days
+            fine = days_overdue * 10  
+            issue.fine = fine
+            issue.save()
+    return render(request, 'base/issue/issue_detail.html', {'issues': issues})
+
+
+
+
+
+def issue_book(request):
+    form = IssueForm()
+    if request.method == 'POST':
+        form = IssueForm(request.POST)
+        if form.is_valid():
+            book = form.cleaned_data['book']
+
+            if book.available_copies > 0:
+                book.available_copies -= 1
+                book.save()
+
+                form.save()
+                return redirect('base:issue_detail')
+            else:
+                form.add_error('book', 'This book is currently not available for issuance.')
+
+    context = {'form': form}
+    return render(request, 'base/issue/issue_book.html', context)
+
+
+
+
+def return_book(request, issue_id):
+    issue = Issue.objects.get(id=issue_id)
+    issue.status = 'returned'
+    issue.fine = 0
+    issue.save()
+
+    book = issue.book
+    book.available_copies += 1
+    book.save()
+
+    messages.success(request, 'Book returned successfully.')
+
+    return redirect('base:issue_detail')
+
+
+
+
+
+
+
+
+
+
+
+
+def home_view(request):
+    return render(request,'base/index.html')
+
+
+
+
+from django.contrib.auth import authenticate, login, logout
+
+# def admin_login(request):
+#     if request.method == "POST":
+#         email= request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(email=email, password=password)
+
+#         if user is not None:
+#             login(request, user)
+#             if request.user.is_superuser:
+#                 return redirect("base:book_list")
+#             else:
+#                 return HttpResponse("You are not an admin.")
+#         else:
+#             alert = True
+#             return render(request, "base/accounts/adminlogin.html", {'alert':alert})
+#     return render(request, "base/accounts/adminlogin.html")
+
+
+
+
+def admin_login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            if request.user.is_superuser:
+                return redirect("base:book_list")
+            else:
+                return HttpResponse("You are not an admin.")
+        else:
+            alert = True
+            return render(request, "base/accounts/adminlogin.html", {'alert':alert})
+    return render(request, "base/accounts/adminlogin.html")
+
+
+
+
+
+
+def student_login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            if request.user.is_superuser:
+                return HttpResponse("You are not a student!!")
+            else:
+                return redirect("/profile")
+        else:
+            alert = True
+            return render(request, "student_login.html", {'alert':alert})
+    return render(request, "student_login.html")
+
+
+
+def Logout(request):
+    logout(request)
+    return redirect ("/")

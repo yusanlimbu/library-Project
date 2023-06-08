@@ -8,3 +8,7 @@ admin.site.register(Book)
 
 from .models import Student
 admin.site.register(Student)
+
+
+from .models import *
+admin.site.register(Issue)
