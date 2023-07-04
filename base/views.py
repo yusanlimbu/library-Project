@@ -150,10 +150,41 @@ def delete_student(request, pk):
 
 # views.py
 
+# from django.shortcuts import render, redirect
+# from django.urls import reverse
+# from openpyxl import load_workbook
+# from .models import Student
+
+# def upload(request):
+#     if request.method == 'POST' and request.FILES['myfile']:
+#         myfile = request.FILES['myfile']
+#         # Check that the file extension is .xlsx
+#         if not myfile.name.endswith('.xlsx'):
+#             return render(request, 'base/student_import.html', {'error': 'File must be in .xlsx format.'})
+#         wb = load_workbook(filename=myfile, read_only=True)
+#         ws = wb.active
+#         for row in ws.iter_rows(min_row=2):
+#             student = Student(
+#                 student_id=row[0].value,
+#                 name=row[1].value,
+#                 email=row[2].value,
+#                 password=row[3].value,
+#                 course=row[4].value,
+#                 batch=row[5].value,
+#                 phone_number=row[6].value
+#             )
+#             student.save()
+#         # return redirect('student_list')
+#         return redirect(reverse('base:student_list'))
+#     return render(request, 'base/student_import.html')
+
+
+
+#user chai create vayo and also student done ##############################
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from openpyxl import load_workbook
-from .models import Student
+from django.contrib.auth.models import User
 
 def upload(request):
     if request.method == 'POST' and request.FILES['myfile']:
@@ -164,6 +195,12 @@ def upload(request):
         wb = load_workbook(filename=myfile, read_only=True)
         ws = wb.active
         for row in ws.iter_rows(min_row=2):
+            username = row[2].value  # Assuming email is used as the username
+            password = str(row[3].value)  # Convert password to string
+            email = row[2].value
+            user = User.objects.create_user(username=username, password=password, email=email)
+            # Additional fields specific to your application can be added here
+            user.save()
             student = Student(
                 student_id=row[0].value,
                 name=row[1].value,
@@ -174,9 +211,10 @@ def upload(request):
                 phone_number=row[6].value
             )
             student.save()
-        # return redirect('student_list')
         return redirect(reverse('base:student_list'))
     return render(request, 'base/student_import.html')
+
+
 
 
 
@@ -203,25 +241,32 @@ def issue_detail(request):
 
 
 
+
+#perfect for my project
 def issue_book(request):
     form = IssueForm()
     if request.method == 'POST':
         form = IssueForm(request.POST)
         if form.is_valid():
             book = form.cleaned_data['book']
+            student = form.cleaned_data['student']
 
-            if book.available_copies > 0:
-                book.available_copies -= 1
-                book.save()
-
-                form.save()
-                return redirect('base:issue_detail')
+            # Check if the book has already been issued to the same user
+            if Issue.objects.filter(book=book, student=student, status='issued').exists():
+                form.add_error('book', 'This book has already been issued to the same user.')  #book field ma error halxa
+            
             else:
-                form.add_error('book', 'This book is currently not available for issuance.')
+                if book.available_copies > 0:
+                    book.available_copies -= 1
+                    book.save()
+
+                    form.save()
+                    return redirect('base:issue_detail')
+                else:
+                    form.add_error('book', 'This book is currently not available.')
 
     context = {'form': form}
     return render(request, 'base/issue/issue_book.html', context)
-
 
 
 
@@ -311,11 +356,12 @@ def student_login(request):
             if request.user.is_superuser:
                 return HttpResponse("You are not a student!!")
             else:
-                return redirect("/profile")
+                return redirect("base:book_list")
         else:
             alert = True
-            return render(request, "student_login.html", {'alert':alert})
-    return render(request, "student_login.html")
+            return render(request, "base/accounts/student_login.html", {'alert':alert})
+    return render(request, "base/accounts/student_login.html")
+
 
 
 
