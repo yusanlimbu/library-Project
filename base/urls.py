@@ -36,7 +36,7 @@ urlpatterns = [
     #login
     path("admin_login/", views.admin_login, name="admin_login"),
     path("student_login/", views.student_login, name="student_login"),
-    path("logout/", views.Logout, name="logout"),
+    path("logout/", views.Logout_User, name="logout"),
     path('', home_view, name='index'),
 
 ]

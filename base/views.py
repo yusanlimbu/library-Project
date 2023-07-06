@@ -6,15 +6,19 @@ from django.contrib import messages
 from .models import *
 from .forms import BookForm,StudentForm,IssueForm
 
-from django.urls import reverse_lazy
+
+from django.contrib.auth.decorators import login_required
 
 
 
 
+
+@login_required(login_url = '/admin_login')
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'base/book_list.html', {'books':books} )
 
+@login_required(login_url = '/admin_login')
 def student_list(request):
     students = Student.objects.all()
     return render(request, 'base/student_list.html', {'students':students} )
@@ -32,6 +36,7 @@ def student_list(request):
 #     return render(request,'base/add_book.html', context)
 
 
+@login_required(login_url = '/admin_login')
 def add_book(request):
     form = BookForm()
     if request.method == 'POST':
@@ -87,6 +92,7 @@ def add_book(request):
 #     return render(request,'base/add_book.html', context)
 
 
+@login_required(login_url = '/admin_login')
 def update_book(request, pk):
     book = Book.objects.get(pk=pk)
     form = BookForm(instance=book)
@@ -119,6 +125,8 @@ def update_book(request, pk):
     return render(request, 'base/add_book.html', context)
 
 
+
+@login_required(login_url = '/admin_login')
 def delete_book(request, pk):
     book = Book.objects.get(pk=pk)
     book.delete()
@@ -126,7 +134,7 @@ def delete_book(request, pk):
 
 
 
-
+@login_required(login_url = '/admin_login')
 def update_student(request,pk):
 
     student = Student.objects.get(pk=pk)
@@ -141,6 +149,8 @@ def update_student(request,pk):
     return render(request,'base/student_update.html', context)
 
 
+
+@login_required(login_url = '/admin_login')
 def delete_student(request, pk):
     student = Student.objects.get(pk=pk)
     student.delete()
@@ -186,6 +196,7 @@ from django.urls import reverse
 from openpyxl import load_workbook
 from django.contrib.auth.models import User
 
+@login_required(login_url = '/admin_login')
 def upload(request):
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
@@ -193,7 +204,7 @@ def upload(request):
         if not myfile.name.endswith('.xlsx'):
             return render(request, 'base/student_import.html', {'error': 'File must be in .xlsx format.'})
         wb = load_workbook(filename=myfile, read_only=True)
-        ws = wb.active
+        ws = wb.active 
         for row in ws.iter_rows(min_row=2):
             username = row[2].value  # Assuming email is used as the username
             password = str(row[3].value)  # Convert password to string
@@ -224,13 +235,13 @@ def upload(request):
 
 from datetime import date
 
+@login_required(login_url = '/admin_login')
 def issue_detail(request):
     today = date.today()
     issues = Issue.objects.all()
 
     for issue in issues:
         if issue.expiry_date < today and issue.status == 'issued':
-            # Calculate the fine
             days_overdue = (today - issue.expiry_date).days
             fine = days_overdue * 10  
             issue.fine = fine
@@ -243,6 +254,7 @@ def issue_detail(request):
 
 
 #perfect for my project
+@login_required(login_url = '/admin_login')
 def issue_book(request):
     form = IssueForm()
     if request.method == 'POST':
@@ -269,18 +281,21 @@ def issue_book(request):
     return render(request, 'base/issue/issue_book.html', context)
 
 
-
+@login_required(login_url = '/admin_login')
 def return_book(request, issue_id):
     issue = Issue.objects.get(id=issue_id)
-    issue.status = 'returned'
-    issue.fine = 0
-    issue.save()
+    if issue.status == 'issued':
+        issue.status = 'returned'
+        issue.fine = 0
+        issue.save()
 
-    book = issue.book
-    book.available_copies += 1
-    book.save()
+        book = issue.book
+        book.available_copies += 1
+        book.save()
 
-    messages.success(request, 'Book returned successfully.')
+        messages.success(request, 'Book returned successfully.')
+    else:
+        messages.error(request, 'Book is already returned')
 
     return redirect('base:issue_detail')
 
@@ -293,34 +308,11 @@ def return_book(request, issue_id):
 
 
 
+from django.contrib.auth import authenticate, login, logout
 
 
 def home_view(request):
     return render(request,'base/index.html')
-
-
-
-
-from django.contrib.auth import authenticate, login, logout
-
-# def admin_login(request):
-#     if request.method == "POST":
-#         email= request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate(email=email, password=password)
-
-#         if user is not None:
-#             login(request, user)
-#             if request.user.is_superuser:
-#                 return redirect("base:book_list")
-#             else:
-#                 return HttpResponse("You are not an admin.")
-#         else:
-#             alert = True
-#             return render(request, "base/accounts/adminlogin.html", {'alert':alert})
-#     return render(request, "base/accounts/adminlogin.html")
-
-
 
 
 def admin_login(request):
@@ -365,6 +357,6 @@ def student_login(request):
 
 
 
-def Logout(request):
+def Logout_User(request):
     logout(request)
-    return redirect ("/")
+    return redirect ("base:index")
