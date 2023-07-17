@@ -39,4 +39,9 @@ urlpatterns = [
     path("logout/", views.Logout_User, name="logout"),
     path('', home_view, name='index'),
 
+
+    #student profile
+    path("profile/", views.profile, name="profile"),
+    path("change_password/", views.change_password, name="change_password"),
+    path("viewbook/", views.view_student_book, name="viewbook"),
 ]

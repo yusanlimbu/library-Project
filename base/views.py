@@ -301,6 +301,53 @@ def return_book(request, issue_id):
 
 
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from .models import Student
+
+
+def profile(request):
+    user = request.user  # Retrieve the logged-in user
+    try:
+        student = Student.objects.get(email=user.email)  # Retrieve the student using the email field
+        context = {'student': student}  
+        return render(request, 'base/student/profile.html', context)
+    except Student.DoesNotExist:
+        return render(request, "base/student/profile.html", context)
+
+
+def change_password(request):
+    if request.method == "POST":
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        try:
+            u = User.objects.get(id=request.user.id)
+            if u.check_password(current_password):
+                u.set_password(new_password)
+                u.save()
+                alert = True
+                return render(request, "base/student/change_password.html", {'alert':alert})
+            else:
+                currpasswrong = True
+                return render(request, "base/student/change_password.html", {'currpasswrong':currpasswrong})
+        except:
+            pass
+    return render(request, "base/student/change_password.html")
+
+
+
+def view_student_book(request):
+    student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
+    books = Book.objects.filter(issue__student=student)  # Retrieve books associated with the student
+    context = {'student': student, 'books': books}  
+    return render(request, "base/student/viewbook.html")
+    
+
+
+
+
+
 
 
 
@@ -334,9 +381,6 @@ def admin_login(request):
 
 
 
-
-
-
 def student_login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -348,7 +392,7 @@ def student_login(request):
             if request.user.is_superuser:
                 return HttpResponse("You are not a student!!")
             else:
-                return redirect("base:book_list")
+                return redirect("base:profile")
         else:
             alert = True
             return render(request, "base/accounts/student_login.html", {'alert':alert})
@@ -360,3 +404,6 @@ def student_login(request):
 def Logout_User(request):
     logout(request)
     return redirect ("base:index")
+
+
+
