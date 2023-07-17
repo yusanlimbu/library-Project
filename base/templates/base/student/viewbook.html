@@ -10,30 +10,29 @@
         <thead>
             <tr class="text-center">
                 <th>Sr.No</th>
-                <th>Student ID</th>
-                <th>Student Name</th>
                 <th>Book Name</th>
-                <th>Author</th>
-                <th>Issued Date</th>
+                <th>Student Name</th>
+                <th>Issue Date</th>
                 <th>Expiry Date</th>
                 <th>Fine</th>
+                
+                
             </tr>
         </thead>
         <tbody>
-            {% comment %} {% for i in li1 %}
-            <tr class="text-center">
-                <td>{{forloop.counter}}.</td>
-                <td>{{i.0}}</td>
-                <td>{{i.1}}</td>
-                <td>{{i.2}}</td>
-                <td>{{i.3}}</td>
-                {% endfor %}
-                {% for i in li2 %}
-                <td>{{i.0}}</td>
-                <td>{{i.1}}</td>
-                <td>₹ {{i.2}}</td> {% endcomment %}
-            {% comment %} </tr> {% endcomment %}
-            {% comment %} {% endfor %} {% endcomment %}
+             {% for issue in issues %}
+             {% if issue.status == 'issued' %}
+             <tr class="text-center">
+                <td>{{ forloop.counter }}</td>
+                 <td>{{ issue.book }}</td>
+                 <td>{{ issue.student }}</td>
+                 <td>{{ issue.issue_date }}</td>
+                 <td>{{ issue.expiry_date }}</td>
+                 <td>{{ issue.fine }}</td>
+                 
+              </tr>
+              {% endif %}
+             {% endfor %}
         </tbody>
     </table>
     </div>

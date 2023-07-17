@@ -337,12 +337,43 @@ def change_password(request):
 
 
 
+
+
+
+
+
 def view_student_book(request):
     student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
     books = Book.objects.filter(issue__student=student)  # Retrieve books associated with the student
     context = {'student': student, 'books': books}  
     return render(request, "base/student/viewbook.html")
-    
+
+
+# from django.shortcuts import render
+# from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.models import User
+# from .models import Student, Issue
+
+# @login_required(login_url='/login/')  # Ensures the user is authenticated
+# def student_issues(request):
+#     student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
+#     issues = Issue.objects.filter(student=student)  # Retrieve issues associated with the student
+#     context = {'student': student, 'issues': issues}  # Pass the student and issues to the template context
+#     return render(request, 'student_issues.html', context)
+
+def view_student_book(request):
+    student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
+    today = date.today()
+    issues = Issue.objects.filter(student=student)  # Retrieve issues associated with the student
+
+    for issue in issues:
+        if issue.expiry_date < today and issue.status == 'issued':
+            days_overdue = (today - issue.expiry_date).days
+            fine = days_overdue * 10  
+            issue.fine = fine
+            issue.save()
+
+    return render(request, 'base/student/viewbook.html', {'issues': issues})
 
 
 
