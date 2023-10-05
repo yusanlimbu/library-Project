@@ -4,8 +4,8 @@
     <div class="container-fluid">
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Issue</h1>
-        <p class="mb-4">This is the list of books issued to the students <a target="_blank"
-                href="https://www.oic.edu.np/">official DataTables documentation</a>.</p>
+        {% comment %} <p class="mb-4">This is the list of books issued to the students <a target="_blank"
+                href="https://www.oic.edu.np/">official DataTables documentation</a>.</p> {% endcomment %}
                 {% for message in messages %}
                 <p id="messages">{{message}}</p>
                 {% endfor %}

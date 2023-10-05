@@ -21,7 +21,7 @@
         </thead>
         <tbody>
              {% for issue in issues %}
-             {% if issue.status == 'issued' %}
+             
              <tr class="text-center">
                 <td>{{ forloop.counter }}</td>
                  <td>{{ issue.book }}</td>
@@ -31,7 +31,7 @@
                  <td>{{ issue.fine }}</td>
                  
               </tr>
-              {% endif %}
+              
              {% endfor %}
         </tbody>
     </table>

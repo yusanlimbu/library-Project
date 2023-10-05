@@ -105,6 +105,10 @@ def update_book(request, pk):
             if updated_book.total_copies < 0:
                 form.add_error('total_copies', 'Total copies must be a non-negative number.')
             
+            isbn = form.cleaned_data['isbn']
+            if len(isbn) != 10:
+                form.add_error('isbn', 'ISBN must be exactly 10 characters long.')
+            
             if updated_book.available_copies < 0:
                 form.add_error('available_copies', 'Available copies must be a non-negative number.')
             
@@ -306,7 +310,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Student
 
-
+@login_required(login_url = '/student_login')
 def profile(request):
     user = request.user  # Retrieve the logged-in user
     try:
@@ -317,6 +321,8 @@ def profile(request):
         return render(request, "base/student/profile.html", context)
 
 
+
+@login_required(login_url = '/student_login')
 def change_password(request):
     if request.method == "POST":
         current_password = request.POST['current_password']
@@ -342,38 +348,24 @@ def change_password(request):
 
 
 
-def view_student_book(request):
-    student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
-    books = Book.objects.filter(issue__student=student)  # Retrieve books associated with the student
-    context = {'student': student, 'books': books}  
-    return render(request, "base/student/viewbook.html")
 
-
-# from django.shortcuts import render
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.models import User
-# from .models import Student, Issue
-
-# @login_required(login_url='/login/')  # Ensures the user is authenticated
-# def student_issues(request):
-#     student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
-#     issues = Issue.objects.filter(student=student)  # Retrieve issues associated with the student
-#     context = {'student': student, 'issues': issues}  # Pass the student and issues to the template context
-#     return render(request, 'student_issues.html', context)
-
+@login_required(login_url = '/student_login')
 def view_student_book(request):
     student = Student.objects.get(email=request.user.email)  # Retrieve the student using the email field
     today = date.today()
-    issues = Issue.objects.filter(student=student)  # Retrieve issues associated with the student
+    issues = Issue.objects.filter(student=student, status='issued')  # Filter issues by student and status
 
     for issue in issues:
-        if issue.expiry_date < today and issue.status == 'issued':
+        if issue.expiry_date < today:
             days_overdue = (today - issue.expiry_date).days
-            fine = days_overdue * 10  
+            fine = days_overdue * 10
             issue.fine = fine
             issue.save()
 
     return render(request, 'base/student/viewbook.html', {'issues': issues})
+
+
+
 
 
 
