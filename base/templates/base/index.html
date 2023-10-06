@@ -14,10 +14,10 @@
 
 
 <style type="text/css">
-    .bs-example{
+    {% comment %} .bs-example{
         margin: 0px;
 
-    }
+    } {% endcomment %}
 .navbar-brand{
   font-size: 20px;
   font-family: sans-serif;
@@ -26,9 +26,9 @@
 .col-lg-6{
   padding-left: 20%;
 }
-.jumbotron{
+{% comment %} .jumbotron{
   margin-bottom: 0px;
-}
+} {% endcomment %}
 .wel{
   margin-top: 60px;
   padding-left: 25%;
@@ -51,7 +51,7 @@
 
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h1 class="wel"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Welcome to The Orchdi College library </h1>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h1 class="wel"> &nbsp;&nbsp;&nbsp; Welcome to The Orchid College library </h1>
 <h3 align="center">Please login according to your category.</h3>
 
 
@@ -65,17 +65,17 @@
   <div class="row">
 
     <div class="col-lg-6">
-      {% comment %} <img src="{% static "images/admin.jpg" %}" width="70%" height="70%" alt=""><br><br> {% endcomment %}
+     
         <a class="btn btn-secondary" style="text-align:center" href="{% url 'base:admin_login' %}" role="button">Admin</a>
 
     </div>
 
     <div class="col-lg-6">
-      {% comment %} <img src="{% static "images/student.jpg" %}" width="70%" height="70%" alt=""><br><br> {% endcomment %}
+    
       <a class="btn btn-secondary" href="{% url 'base:student_login' %}" role="button">Student</a>
     </div>
   </div>
-<hr class="my-4">
+{% comment %} <hr class="my-4"> {% endcomment %}
 
 </div>
 

@@ -154,11 +154,22 @@ def update_student(request,pk):
 
 
 
+
+
+
+
 @login_required(login_url = '/admin_login')
 def delete_student(request, pk):
-    student = Student.objects.get(pk=pk)
+    student = get_object_or_404(Student, pk=pk) 
+    # Check if the student has any issued books
+    if Issue.objects.filter(student=student, status='issued').exists():
+        return HttpResponse('Cannot delete student with issued books.')
     student.delete()
     return HttpResponseRedirect(reverse('base:student_list'))
+# def delete_student(request, pk):
+#     student = Student.objects.get(pk=pk)
+#     student.delete()
+#     return HttpResponseRedirect(reverse('base:student_list'))
 
 
 
@@ -248,6 +259,10 @@ def issue_detail(request):
         if issue.expiry_date < today and issue.status == 'issued':
             days_overdue = (today - issue.expiry_date).days
             fine = days_overdue * 10  
+
+            # Limit the fine to a maximum of 500
+            if fine > 500:
+                fine = 500
             issue.fine = fine
             issue.save()
     return render(request, 'base/issue/issue_detail.html', {'issues': issues})
@@ -359,6 +374,8 @@ def view_student_book(request):
         if issue.expiry_date < today:
             days_overdue = (today - issue.expiry_date).days
             fine = days_overdue * 10
+            if fine > 500:
+                fine = 500
             issue.fine = fine
             issue.save()
 

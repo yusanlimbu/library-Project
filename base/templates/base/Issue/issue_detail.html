@@ -20,8 +20,9 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Book</th>
+                                <th>Student ID</th>
                                 <th>Student</th>
+                                <th>Book</th>
                                 <th>Issue Date</th>
                                 <th>Expiry Date</th>
                                 <th>Fine</th>
@@ -32,8 +33,9 @@
                         <tbody>
                             {% for issue in issues %}
                             <tr>
-                                <td>{{ issue.book }}</td>
+                                <td>{{ issue.student_id}}</td>
                                 <td>{{ issue.student }}</td>
+                                <td>{{ issue.book }}</td>
                                 <td>{{ issue.issue_date }}</td>
                                 <td>{{ issue.expiry_date }}</td>
                                 <td>{{ issue.fine }}</td>

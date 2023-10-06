@@ -6,13 +6,13 @@
 
 
 <style type="text/css">
-    .bs-example{
+    {% comment %} .bs-example{
         margin: 0px;
         
 
-    }
+    } {% endcomment %}
 .navbar-brand{
-  font-size: 30px;
+  font-size: 33px;
   font-family: cursive;
   color: rgb(61, 67, 65);
   
@@ -25,7 +25,7 @@
 <body>
 <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="logout ">
-       <img src="static\images\logo.jpg" width="50" height="50" class="d-inline-block align-top" alt="">
+       <img src="{% static 'images/logo.jpg'%}" width="50" height="50" class="d-inline-block align-top" alt="">
       The Orchid College
     </a>
   </nav>
