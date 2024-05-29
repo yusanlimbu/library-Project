@@ -12,7 +12,6 @@ from django.contrib.auth.decorators import login_required
 
 
 
-
 @login_required(login_url = '/admin_login')
 def book_list(request):
     books = Book.objects.all()
@@ -23,17 +22,6 @@ def student_list(request):
     students = Student.objects.all()
     return render(request, 'base/student_list.html', {'students':students} )
 
-# def add_book(request):
-#     form = BookForm()
-#     if request.method == 'POST':
-#         #print('Printing POST:',request.POST)
-#         form = BookForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('base:book_list')
-
-#     context = {'form':form}
-#     return render(request,'base/add_book.html', context)
 
 
 @login_required(login_url = '/admin_login')
@@ -77,21 +65,6 @@ def add_book(request):
 
 
 
-# def update_book(request,pk):
-
-#     book = Book.objects.get(pk=pk)
-#     form = BookForm(instance=book)
-#     if request.method == 'POST':
-#         #print('Printing POST:',request.POST)
-#         form = BookForm(request.POST, instance = book)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('base:book_list')
-
-#     context = {'form':form}
-#     return render(request,'base/add_book.html', context)
-
-
 @login_required(login_url = '/admin_login')
 def update_book(request, pk):
     book = Book.objects.get(pk=pk)
@@ -132,9 +105,19 @@ def update_book(request, pk):
 
 @login_required(login_url = '/admin_login')
 def delete_book(request, pk):
-    book = Book.objects.get(pk=pk)
+    book = get_object_or_404(Book, pk=pk)
+    
+    # Check if the book has been issued
+    if Issue.objects.filter(book=book, status='issued').exists():
+        return HttpResponse('Cannot delete book with has been issued.')
+    # If the book has not been issued, proceed with the deletion.
     book.delete()
     return HttpResponseRedirect(reverse('base:book_list'))
+
+# def delete_book(request, pk):
+#     book = Book.objects.get(pk=pk)
+#     book.delete()
+#     return HttpResponseRedirect(reverse('base:book_list'))
 
 
 
@@ -166,42 +149,9 @@ def delete_student(request, pk):
         return HttpResponse('Cannot delete student with issued books.')
     student.delete()
     return HttpResponseRedirect(reverse('base:student_list'))
-# def delete_student(request, pk):
-#     student = Student.objects.get(pk=pk)
-#     student.delete()
-#     return HttpResponseRedirect(reverse('base:student_list'))
 
 
 
-# views.py
-
-# from django.shortcuts import render, redirect
-# from django.urls import reverse
-# from openpyxl import load_workbook
-# from .models import Student
-
-# def upload(request):
-#     if request.method == 'POST' and request.FILES['myfile']:
-#         myfile = request.FILES['myfile']
-#         # Check that the file extension is .xlsx
-#         if not myfile.name.endswith('.xlsx'):
-#             return render(request, 'base/student_import.html', {'error': 'File must be in .xlsx format.'})
-#         wb = load_workbook(filename=myfile, read_only=True)
-#         ws = wb.active
-#         for row in ws.iter_rows(min_row=2):
-#             student = Student(
-#                 student_id=row[0].value,
-#                 name=row[1].value,
-#                 email=row[2].value,
-#                 password=row[3].value,
-#                 course=row[4].value,
-#                 batch=row[5].value,
-#                 phone_number=row[6].value
-#             )
-#             student.save()
-#         # return redirect('student_list')
-#         return redirect(reverse('base:student_list'))
-#     return render(request, 'base/student_import.html')
 
 
 
@@ -260,9 +210,9 @@ def issue_detail(request):
             days_overdue = (today - issue.expiry_date).days
             fine = days_overdue * 10  
 
-            # Limit the fine to a maximum of 500
-            if fine > 500:
-                fine = 500
+            # # Limit the fine to a maximum of 500
+            # if fine > 500:
+            #     fine = 500
             issue.fine = fine
             issue.save()
     return render(request, 'base/issue/issue_detail.html', {'issues': issues})
@@ -374,21 +324,12 @@ def view_student_book(request):
         if issue.expiry_date < today:
             days_overdue = (today - issue.expiry_date).days
             fine = days_overdue * 10
-            if fine > 500:
-                fine = 500
+            # if fine > 500:
+            #     fine = 500
             issue.fine = fine
             issue.save()
 
     return render(request, 'base/student/viewbook.html', {'issues': issues})
-
-
-
-
-
-
-
-
-
 
 
 
@@ -447,3 +388,28 @@ def Logout_User(request):
 
 
 
+
+######
+######
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from .models import Book, Issue, Student
+
+def request_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    student = get_object_or_404(Student, student_id=request.user.username)  # Assuming you store the student ID in the username field
+
+    # Check if the book is available
+    if book.available_copies > 0:
+        # Create a new issue record
+        issue = Issue(student=student, book=book, status='requested')
+        issue.save()
+
+        # Decrease the available copies of the book
+        book.available_copies -= 1
+        book.save()
+
+        return HttpResponseRedirect(reverse('base:book_list'))  # Redirect to the book list page or a confirmation page
+    else:
+        return render(request, 'base/error_page.html', {'message': 'Sorry, the book is not available for request.'})

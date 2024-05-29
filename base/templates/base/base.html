@@ -105,7 +105,7 @@
                         <h6 class="collapse-header">Issue and Return:</h6>
                         <a class="collapse-item" href="{% url 'base:issue_book' %}">Issue Book</a>
                         <a class="collapse-item" href="{% url 'base:issue_detail' %}">Issue Detail</a>
-                        {% comment %} <a class="collapse-item" href="#">Return Book</a> {% endcomment %}
+                        <a class="collapse-item" href="#">Request List</a>
                     </div>
                 </div>
             </li>
@@ -131,30 +131,13 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                        {% comment %} <a class="collapse-item" href="login.html">Login</a> {% endcomment %}
+                        <a class="collapse-item" href="{% url 'base:logout' %}">logout</a>
+                        
                     </div>
                 </div>
             </li>
 
-            <!-- Nav Item - Charts -->
-            {% comment %} <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li> {% endcomment %}
-
-            <!-- Nav Item - Tables -->
-            {% comment %} <li class="nav-item active">
-                <a class="nav-link" href="base.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li> {% endcomment %}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -229,15 +212,7 @@
             </div>
             <!-- End of Main Content -->
 
-            <!-- Footer -->
-            {% comment %} <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
-                    </div>
-                </div>
-            </footer> {% endcomment %}
-            <!-- End of Footer -->
+            
 
         </div>
         <!-- End of Content Wrapper -->
